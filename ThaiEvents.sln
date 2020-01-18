@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiEvents", "ThaiEvents\ThaiEvents.csproj", "{33AE6B14-58BA-43BF-96BF-4502CC32D87A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThaiEvents", "ThaiEvents\ThaiEvents.csproj", "{33AE6B14-58BA-43BF-96BF-4502CC32D87A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiEventsTest", "ThaiEventsTest\ThaiEventsTest.csproj", "{F869BD6B-5621-4D3A-82D2-95826057989B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{33AE6B14-58BA-43BF-96BF-4502CC32D87A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33AE6B14-58BA-43BF-96BF-4502CC32D87A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33AE6B14-58BA-43BF-96BF-4502CC32D87A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F869BD6B-5621-4D3A-82D2-95826057989B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F869BD6B-5621-4D3A-82D2-95826057989B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F869BD6B-5621-4D3A-82D2-95826057989B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F869BD6B-5621-4D3A-82D2-95826057989B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
