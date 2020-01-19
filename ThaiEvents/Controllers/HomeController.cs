@@ -78,6 +78,12 @@ namespace ThaiEvents.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult RemoveAll()
+        {
+            _repos.DeleteAll();
+            return Redirect("Index");
+        }
+
         private RecuringType GetRecuringType(int type)
         {
             switch (type)

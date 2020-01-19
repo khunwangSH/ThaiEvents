@@ -12,5 +12,6 @@ namespace ThaiEvents.Data
         bool CreateEventDetail(Guid id, DateTime startDate, DateTime endDate, bool isAllDay);
         EventViewModel GetEvent(Guid Id, int eventDetailId = 0);
         List<EventDisplayViewModel> GetEvents();
+        void DeleteAll();
     }
 }

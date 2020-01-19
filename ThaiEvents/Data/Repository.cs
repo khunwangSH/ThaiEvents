@@ -35,7 +35,7 @@ namespace ThaiEvents.Data
                 }
                 var eventItem = new EventViewModel()
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Title = title,
                     Note = note,
                     recurType = recurType,
@@ -213,6 +213,11 @@ namespace ThaiEvents.Data
                 }
             }
             return result;
+        }
+
+        public void DeleteAll()
+        {
+            _events.RemoveAll(w=>w.Id != Guid.Empty);
         }
     }
 }
