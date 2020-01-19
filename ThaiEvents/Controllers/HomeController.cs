@@ -42,9 +42,9 @@ namespace ThaiEvents.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string search)
+        public IActionResult Index(string search="")
         {
-            var s = search.ToLower();
+            var s = (!String.IsNullOrEmpty(search))? search.ToLower() : String.Empty;
             var items = _repos.GetEvents().Where(w => w.Title.ToLower().Contains(s) || w.Note.ToLower().Contains(s)).ToList();
             var pager = new Pager(items.Count, pageSize: PAGE_SIZE);
             ViewBag.Pager = pager;

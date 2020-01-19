@@ -33,6 +33,7 @@ namespace ThaiEvents.Data
                     startDate = Utilities.ConvertStringToDateTime($"{DateTime.Now.ToString("dd/MM/yyyy")} 00:00");
                     endDate = Utilities.ConvertStringToDateTime($"{DateTime.Now.ToString("dd/MM/yyyy")} 23:59");
                 }
+                note = (!String.IsNullOrEmpty(note)) ? note : "";
                 var eventItem = new EventViewModel()
                 {
                     Id = Guid.NewGuid(),
