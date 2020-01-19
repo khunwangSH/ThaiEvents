@@ -19,9 +19,9 @@ namespace ThaiEventsTest
         [Theory]
         [InlineData("Title1", "note1", null, null, true)]
         [InlineData("Title2", "note2", null, null, true)]
-        public void CreateEvent(string title, string note, DateTime startDate, DateTime endDate, bool isAllDay)
+        public void CreateEvent(string title, string note, DateTime? startDate, DateTime? endDate, bool isAllDay)
         {
-            var result = _repo.CreateEvent(title,note,startDate,endDate,isAllDay);
+            var result = _repo.CreateEvent(title,note,DateTime.Now, DateTime.Now.AddHours(2), isAllDay,ThaiEvents.Models.RecuringType.None);
             Assert.Equal(result,true);
         }
     }

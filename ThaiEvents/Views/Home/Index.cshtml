@@ -1,7 +1,9 @@
 ﻿@model List<EventDisplayViewModel>
 @{
     ViewData["Title"] = "Home Page";
-    //var eventItems = 
+    var pager = (Pager)ViewBag.Pager;
+    string search = $"{ViewBag.search}";
+    string sQuery = (!String.IsNullOrEmpty(search)) ? $"&search={search}" : "";
 }
 <div class="row">
     <div class="col-12">
@@ -9,7 +11,7 @@
             
             <div class="form-row">
                 <div class="col">
-                    <input type="text" name="search" class="form-control" placeholder="Ex. New year">
+                    <input type="text" name="search" class="form-control" placeholder="Ex. New year" value="@search">
                 </div>
                 <div class="col-1">
                     <input type="submit" value="Search" class="btn btn-success" />
@@ -18,13 +20,28 @@
         </form>
     </div>
 </div>
+@if(Model.Count() <= 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <h4>- No Events -</h4>
+        </div>
+    </div>
+}
 @foreach (var item in Model.OrderBy(o => o.StartDateTime))
 {
     <div class="row">
         <div class="col-12">
             <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
-                    <div class="mb-1 text-muted"><h4 class="text-primary">@item.StartDateTime.ToString("MMM dd, yyyy") at @item.StartDateTime.ToString("HH:mm")</h4></div>
+                    @if (item.IsAllDay)
+                    {
+                        <div class="mb-1 text-muted"><h4 class="text-primary">All day</h4></div>
+                    }
+                    else
+                    {
+                        <div class="mb-1 text-muted"><h4 class="text-primary">@item.StartDateTime.ToString("MMM dd, yyyy") at @item.StartDateTime.ToString("HH:mm") - @item.EndDateTime.ToString("MMM dd, yyyy") at @item.EndDateTime.ToString("HH:mm")</h4></div>
+                    }
                     <h2 class="mb-0">@item.Title</h2>
                     <p class="card-text mb-auto">@item.Note</p>
                 </div>
@@ -32,3 +49,31 @@
         </div>
     </div>
 }
+
+@if(pager.PageSize > 0){
+<nav aria-label="..." class="p-5">
+    <ul class="pagination">
+        
+        <li class="page-item @((pager.CurrentPage>1)?"":"disabled")">
+            <a class="page-link"  href="?curPage=@($"{pager.CurrentPage-1}{sQuery}")" tabindex="-1">Previous</a>
+        </li>
+        @foreach (var i in pager.Pages)
+        {
+            if (pager.CurrentPage == i)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="?curPage=@($"{i}{sQuery}")">@i <span class="sr-only">(current)</span></a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link"  href="?curPage=@($"{i}{sQuery}")">@i</a></li>
+            }
+        }
+        <li class="page-item @((pager.CurrentPage != pager.TotalPages)?"":"disabled")">
+            <a class="page-link" href="?curPage=@($"{pager.CurrentPage+1}{sQuery}")">Next</a>
+        </li>
+    </ul>
+</nav>
+}
+

@@ -47,14 +47,14 @@ namespace ThaiEvents
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-
             app.UseFileServer(new FileServerOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
+              Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/node_modules"),
                 EnableDirectoryBrowsing = true
             });
+
             app.UseStaticFiles();
 
             app.UseRouting();

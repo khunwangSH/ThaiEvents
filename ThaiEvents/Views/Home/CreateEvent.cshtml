@@ -1,0 +1,137 @@
+﻿@model EventDisplayViewModel
+@{
+    ViewData["Title"] = "Add new event";
+   
+}
+@section Scripts {
+    <script src="../node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="../node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="../node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+    <script>
+        jQuery(function(){
+         jQuery('#StartDateTime').datetimepicker({
+          format:'d/m/Y H:i',
+          onShow:function( ct ){
+           this.setOptions({
+            maxDate:jQuery('#EndDateTime').val()?jQuery('#EndDateTime').val():false
+           })
+          },
+          timepicker:true
+         });
+         jQuery('#EndDateTime').datetimepicker({
+          format:'d/m/Y H:i',
+          onShow:function( ct ){
+           this.setOptions({
+            minDate:jQuery('#StartDateTime').val()?jQuery('#StartDateTime').val():false
+           })
+          },
+          timepicker:true
+         });
+
+            var todayStr = function () {
+                var d = new Date(),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+                hour = d.getHours();
+                min = d.getMinutes();
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+                if (hour.length < 2) hour = '0' + hour;
+                if (min.length < 2) min = '0' + min;
+
+                return [day,month,year].join('/')+" "+[hour,min].join(':');
+            };
+
+            jQuery('#IsAllDay').click(function () {
+                if (!$("#IsAllDay").is(":checked")) {
+                    $('#StartDateTime').prop('disabled', false);
+                    $('#EndDateTime').prop('disabled', false);
+                }
+                else {
+                    var d = new Date();
+                    $('#StartDateTime').val(todayStr);
+                    $('#EndDateTime').val(todayStr);
+                    $('#StartDateTime').prop('disabled', 'disabled');
+                    $('#EndDateTime').prop('disabled', 'disabled');
+                }
+            });
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>@ViewData["Title"]</h1>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-warning"></div>
+            <div class="text-success">@ViewBag.Msg</div>
+            <div class="form-group">
+                <label asp-for="Title">Title <span class="text-danger">*</span>: </label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-warning"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-2">All Day:</div>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="IsAllDay">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDateTime">Start : </label>
+                <input asp-for="StartDateTime" class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDateTime">End : </label>
+                <input asp-for="EndDateTime" class="form-control"  value="@DateTime.Now.AddHours(1).ToString("dd/MM/yyyy HH:mm")"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Note">Note:</label>
+                <textarea asp-for="Note" class="form-control"></textarea>
+                <span asp-validation-for="Note" class="text-warning"></span>
+            </div>
+            <fieldset class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-2 pt-0">Repeat:</legend>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="recurType" value="0" checked>
+                            <label class="form-check-label" for="gridRadios1">
+                                None
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="recurType" value="1">
+                            <label class="form-check-label" for="gridRadios2">
+                                Every Day
+                            </label>
+                        </div>
+                        <div class="form-check disabled">
+                            <input class="form-check-input" type="radio" asp-for="recurType" value="2">
+                            <label class="form-check-label" for="gridRadios3">
+                                Every Week
+                            </label>
+                        </div>
+                        <div class="form-check disabled">
+                            <input class="form-check-input" type="radio" asp-for="recurType" value="3">
+                            <label class="form-check-label" for="gridRadios3">
+                                Every Month
+                            </label>
+                        </div>
+                        <div class="form-check disabled">
+                            <input class="form-check-input" type="radio" asp-for="recurType" value="4">
+                            <label class="form-check-label" for="gridRadios3">
+                                Every Year
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>

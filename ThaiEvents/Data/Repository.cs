@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ThaiEvents.Models;
+using ThaiEvents.Services;
 
 namespace ThaiEvents.Data
 {
@@ -19,17 +20,25 @@ namespace ThaiEvents.Data
             _logger = logger;
            
         }
+     
 
-        public bool CreateEvent(string title, string note, DateTime startDate, DateTime endDate, bool isAllDay)
+        public bool CreateEvent(string title, string note, DateTime startDate, DateTime endDate, bool isAllDay, RecuringType recurType)
         {
             var isSuccess = false;
             try
             {
+                if (isAllDay)
+                {
+                    
+                    startDate = Utilities.ConvertStringToDateTime($"{DateTime.Now.ToString("dd/MM/yyyy")} 00:00");
+                    endDate = Utilities.ConvertStringToDateTime($"{DateTime.Now.ToString("dd/MM/yyyy")} 23:59");
+                }
                 var eventItem = new EventViewModel()
                 {
                     Id = new Guid(),
                     Title = title,
                     Note = note,
+                    recurType = recurType,
                     Details = new List<EventDetailViewModel>() {
                         new EventDetailViewModel() {
                             Id = 1,
@@ -46,43 +55,6 @@ namespace ThaiEvents.Data
             catch(Exception e)
             {
                 _logger.LogError(e.Message,e.StackTrace);
-            }
-            return isSuccess;
-        }
-
-        public bool EditEvent(EventViewModel eventItem)
-        {
-            var isSuccess = false;
-            try
-            {
-
-            }catch(Exception e)
-            {
-                _logger.LogError(e.Message,e.StackTrace);
-            }
-
-            return isSuccess;
-        }
-
-        public bool DeleteEventDetail(Guid eventID, int eventDetailId)
-        {
-            var isSuccess = false;
-            //var item = _events.Where(w => w.Id == eventID)
-            //                .Select(s => s.Details.Where(x => x.Id == eventDetailId).FirstOrDefault())
-            //                .FirstOrDefault();
-            //if(item != null)
-            //{
-            //    _events.Where(w => w.Id == eventID)
-            //        .FirstOrDefault().Details.Remove(item);
-            //    isSuccess = true;
-            //}
-            var item = _events.Where(w => w.Id == eventID).FirstOrDefault();
-            if (item != null)
-            {
-                var result = _events.RemoveAll(w => w.Id == eventID);
-                 result += item.Details.RemoveAll(x => x.Id == eventDetailId);
-                _events.Add(item);
-                isSuccess = result > 0;
             }
             return isSuccess;
         }
@@ -113,19 +85,6 @@ namespace ThaiEvents.Data
             return isSucess;
         }
 
-        public bool EditEventDetail(Guid id, EventDetailViewModel eventItem)
-        {
-            var isSuccess = false;
-            try
-            {
-
-            }catch(Exception e)
-            {
-
-            }
-
-            return isSuccess;
-        }
 
         public EventViewModel GetEvent(Guid Id, int eventDetailId = 0)
         {
@@ -147,13 +106,7 @@ namespace ThaiEvents.Data
             return result;
         }
 
-        public bool DeleteEvent(Guid eventID)
-        {
-            var isSuccess = false;
-            var item = _events.RemoveAll(w => w.Id == eventID);
-
-            return isSuccess;
-        }
+ 
 
         public List<EventDisplayViewModel> GetEvents()
         {
@@ -170,8 +123,96 @@ namespace ThaiEvents.Data
                                     EndDateTime = eventDetailItem.EndDateTime
                             });
                 }
+                results.AddRange(GetEventDisplayForNext30Year(eventItem));
+                results.AddRange(GetEventDisplayForNext120Month(eventItem));
+                results.AddRange(GetEventDisplayForNext200weeks(eventItem));
+                results.AddRange(GetEventDisplayForNext365days(eventItem));
             }
-            return results;
+            return results.OrderBy(w => w.StartDateTime).ToList();
+        }
+
+        private List<EventDisplayViewModel> GetEventDisplayForNext30Year(EventViewModel eventItem)
+        {
+            var result = new List<EventDisplayViewModel>();
+            if (eventItem.recurType == RecuringType.Year)
+            {
+                var eventDetailItem = eventItem.Details.First();
+                for (var y = 1; y <= 30;y++)
+                {
+                    result.Add(new EventDisplayViewModel() {
+                                EventId = eventItem.Id.ToString(),
+                                Title = eventItem.Title,
+                                Note = eventItem.Note,
+                                StartDateTime = eventDetailItem.StartDateTime.AddYears(y),
+                                EndDateTime = eventDetailItem.EndDateTime.AddYears(y)
+                    });
+
+                }
+            }
+            return result;
+        }
+        private List<EventDisplayViewModel> GetEventDisplayForNext120Month(EventViewModel eventItem)
+        {
+            var result = new List<EventDisplayViewModel>();
+            if (eventItem.recurType == RecuringType.Month)
+            {
+                var eventDetailItem = eventItem.Details.First();
+                for (var m = 1; m <=  120; m++)
+                {
+                    result.Add(new EventDisplayViewModel()
+                    {
+                        EventId = eventItem.Id.ToString(),
+                        Title = eventItem.Title,
+                        Note = eventItem.Note,
+                        StartDateTime = eventDetailItem.StartDateTime.AddMonths(m),
+                        EndDateTime = eventDetailItem.EndDateTime.AddMonths(m)
+                    });
+
+                }
+            }
+            return result;
+        }
+        private List<EventDisplayViewModel> GetEventDisplayForNext365days(EventViewModel eventItem)
+        {
+            var result = new List<EventDisplayViewModel>();
+            if (eventItem.recurType == RecuringType.Day)
+            {
+                var eventDetailItem = eventItem.Details.First();
+                for (var d = 1; d <= 365; d++)
+                {
+                    result.Add(new EventDisplayViewModel()
+                    {
+                        EventId = eventItem.Id.ToString(),
+                        Title = eventItem.Title,
+                        Note = eventItem.Note,
+                        StartDateTime = eventDetailItem.StartDateTime.AddDays(d),
+                        EndDateTime = eventDetailItem.EndDateTime.AddDays(d)
+                    });
+
+                }
+            }
+            return result;
+        }
+        private List<EventDisplayViewModel> GetEventDisplayForNext200weeks(EventViewModel eventItem)
+        {
+            var result = new List<EventDisplayViewModel>();
+            if (eventItem.recurType == RecuringType.Week)
+            {
+                var eventDetailItem = eventItem.Details.First();
+                for (var w = 1; w <= 200; w++)
+                {
+                    result.Add(new EventDisplayViewModel()
+                    {
+                        EventId = eventItem.Id.ToString(),
+                        Title = eventItem.Title,
+                        Note = eventItem.Note,
+                        StartDateTime = eventDetailItem.StartDateTime.AddDays((w*7)),
+                        EndDateTime = eventDetailItem.EndDateTime.AddDays((w * 7))
+                    });
+
+                }
+            }
+            return result;
         }
     }
 }

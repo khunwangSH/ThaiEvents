@@ -11,5 +11,15 @@ namespace ThaiEvents.Models
         public string Title { get; set; }
         public string Note { get; set; }
         public List<EventDetailViewModel> Details { get; set; }
+        public RecuringType recurType { get; set; }
+    }
+
+    public enum RecuringType
+    {
+        None,
+        Day,
+        Week,
+        Month,
+        Year
     }
 }
